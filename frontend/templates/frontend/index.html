@@ -9,6 +9,9 @@
   <title>keturunan budi</title>
 
   <style>
+    body {
+      font-family: sans-serif
+    }
     .content_container {
       display: flex;
       align-items: center;
@@ -28,6 +31,26 @@
     }
     .add_form button {
       height: 20px;
+    }
+    #edit_form {
+      display: flex;
+      flex-direction: column;
+    }
+    .button_text {
+      font-size: 1rem;
+      border: none;
+      background: none;
+      text-decoration-line: underline;
+      text-decoration-color: blue;
+    }
+    .button_text:hover {
+      cursor: pointer
+    }
+    .person_info {
+      border: 1px solid black;
+      max-width: 500px;
+      padding: 10px;
+      box-sizing: border-box
     }
     </style>
 
@@ -53,9 +76,13 @@
           const content_container = document.createElement('div');
           content_container.setAttribute('class', 'content_container');
           
-          const text = document.createElement('p');
+          const text = document.createElement('button');
+          text.setAttribute('class', "button_text")
+          text.addEventListener("click", () => {
+            infoOrang(item.id)
+          })
+
           text.innerHTML = item.nama;
-          content_container.append(text);
           
           const add_form = document.createElement('div')
           add_form.setAttribute('class', 'add_form')
@@ -97,11 +124,12 @@
             hapusOrang(item.id)
           })
           remove_btn.innerHTML = '-';
-
+          
           add_form.append(field1);
           add_form.append(field2);
           add_form.append(field3);
           add_form.append(submit_btn)
+          content_container.append(text);
           content_container.append(add_btn);
           content_container.append(remove_btn);
           content_container.append(add_form);
@@ -178,6 +206,7 @@
         .then(data => {
           const result = data.result;
           // refresh before loading
+          resetPersonInfo()
           const first = document.querySelector('.keturunan_dari_id0')
           while (first.firstChild) {
             first.removeChild(first.lastChild);
@@ -187,6 +216,32 @@
         .catch(error => {
           console.log(error)
         })
+    }
+
+    function infoOrang(id) {
+      fetch(`/api/orang/${id}`, {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' }})
+        .then(response => response.json())
+        .then(data => {
+          const result = data.result[0];
+          document.querySelector('.name_field').value = result.nama
+          document.querySelector('.gender_field').value = result.jenis_kelamin
+          const submit_button = document.querySelector('.submit_edit_btn').disabled = false
+
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    function resetPersonInfo() {
+      const name_field = document.querySelector('.name_field')
+      const gender_field = document.querySelector('.gender_field')
+      const submit_button = document.querySelector('.submit_edit_btn')
+      name_field.value = ""
+      gender_field.value = ""
+      submit_button.disabled = true
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -200,13 +255,25 @@
 </head>
 <body>
   <h1>Keturunan Budi</h1>
+  <hr>
   <main>
+    <div class="person_info">
+      <h3>Detail Orang</h3>
+      <form id="edit_form">
+        <input type="hidden" name="id">
+        <p>Nama</p>
+        <input type="text" class="name_field" name="nama" placeholder="nama" value="">
+        <p>Jenis Kelamin</p>
+        <input type="text" class="gender_field" name="jenis_kelamin" placeholder="jenis_kelamin" value="">
+        <button class="submit_edit_btn" type="submit">Edit</button>
+      </form>
+    </div>
+    <div id="error_output"></div>
     <ul class="keturunan_dari_id0">
 
     </ul>
   </main>
 
-  <div id="error_output"></div>
 
 </body>
 </html>

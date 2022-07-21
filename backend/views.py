@@ -179,10 +179,13 @@ def orang(request, nama_or_id=None):
             except:
                 message = "failed"
 
+            # reset auto increment
+            cursor.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'budi'")
+
         return JsonResponse(
             {
                 "message": message
-            }, status = 200 if message == 'success' else 400
+            }
         )
 @csrf_exempt
 def test(request):
