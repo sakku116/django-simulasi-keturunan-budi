@@ -218,6 +218,12 @@
         })
     }
 
+    function submitEdit() {
+      const id = document.querySelector('.id_field')
+      const nama = document.querySelector('.name_field')
+      const gender = document.querySelector('.gender_field')
+    }
+
     function infoOrang(id) {
       fetch(`/api/orang/${id}`, {
       method: 'GET',
@@ -225,6 +231,7 @@
         .then(response => response.json())
         .then(data => {
           const result = data.result[0];
+          document.querySelector('.id_field').value = result.id
           document.querySelector('.name_field').value = result.nama
           document.querySelector('.gender_field').value = result.jenis_kelamin
           const submit_button = document.querySelector('.submit_edit_btn').disabled = false
@@ -236,9 +243,11 @@
     }
 
     function resetPersonInfo() {
+      const id_field = document.querySelector('.id_field')
       const name_field = document.querySelector('.name_field')
       const gender_field = document.querySelector('.gender_field')
       const submit_button = document.querySelector('.submit_edit_btn')
+      id_field.value = ""
       name_field.value = ""
       gender_field.value = ""
       submit_button.disabled = true
@@ -260,13 +269,13 @@
     <div class="person_info">
       <h3>Detail Orang</h3>
       <form id="edit_form">
-        <input type="hidden" name="id">
+        <input type="hidden" class="id_field" name="id">
         <p>Nama</p>
         <input type="text" class="name_field" name="nama" placeholder="nama" value="">
         <p>Jenis Kelamin</p>
         <input type="text" class="gender_field" name="jenis_kelamin" placeholder="jenis_kelamin" value="">
-        <button class="submit_edit_btn" type="submit">Edit</button>
       </form>
+      <button class="submit_edit_btn" onclick="submitEdit()">Edit</button>
     </div>
     <div id="error_output"></div>
     <ul class="keturunan_dari_id0">

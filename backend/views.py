@@ -160,7 +160,12 @@ def orang(request, nama_or_id=None):
             }
         )
     if request.method == "PUT":
-        pass
+        id = getBodyRequest('id')
+        nama = getBodyRequest('nama')
+        jenis_kelamin = getBodyRequest('jenis_kelamin')
+
+        with connection.cursor() as cursor:
+            cursor.execute(f"UPDATE budi SET nama = {nama},")
 
     if request.method == "DELETE":
         id = getBodyRequest('id')
