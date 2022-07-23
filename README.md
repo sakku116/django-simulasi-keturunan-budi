@@ -30,15 +30,20 @@
     
     sudah.
 3. Buat query untuk mendapatkan semua anak Budi
+    
     hit endpoint : `api/anak-budi`
 4. Buat query untuk mendapatkan cucu dari budi
+    
     hit endpoint : `api/cucu-budi/`
 5. Buat query untuk mendapatkan cucu perempuan dari budi.
+    
     hit endpoint : `api/cucu-budi/?jenis_kelamin=wanita`
 6. Buat query untuk mendapatkan bibi dari Farah
+    
     hit endpoint : `api/bibi-dari/farah`
 7. Buat query untuk mendapatkan sepupu laki-laki dari H
 ani
+    
     hit endpoint : `api/sepupu-dari/hani?jenis_kelamin=pria`
 8. Rancang dan buat API yang bisa dibuat untuk kasus di atas
 
