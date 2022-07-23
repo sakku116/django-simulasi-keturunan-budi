@@ -10,7 +10,8 @@
 
   <style>
     body {
-      font-family: sans-serif
+      font-family: sans-serif;
+      margin-bottom: 100px
     }
     .content_container {
       display: flex;
@@ -22,7 +23,8 @@
       font-size: .6rem
     }
     input {
-      width: 70px
+      width: 150px;
+      height: 30px
     }
     .add_form {
       display: none;
@@ -51,6 +53,10 @@
       max-width: 500px;
       padding: 10px;
       box-sizing: border-box
+    }
+    .submit_edit_btn {
+      font-size: 1rem;
+      margin-top: 10px
     }
     </style>
 
@@ -192,6 +198,11 @@
         .then(response => response.json())
         .then(data => {
           loadOrang()
+          if (data.message != 'success' && data.message != 'failed') {
+            document.querySelector("#error_output").innerHTML = data.message
+          } else {
+            document.querySelector("#error_output").innerHTML = ""
+          }
         })
         .catch(error => {
           console.log(error)
@@ -219,9 +230,22 @@
     }
 
     function submitEdit() {
-      const id = document.querySelector('.id_field')
-      const nama = document.querySelector('.name_field')
-      const gender = document.querySelector('.gender_field')
+      data = {
+        "id": document.querySelector('.id_field').value,
+        "nama": document.querySelector('.name_field').value,
+        "jenis_kelamin": document.querySelector('.gender_field').value
+      }
+      console.log(data)
+      fetch('api/orang/', {
+        method: 'PUT',
+        body: JSON.stringify(data)})
+        .then(response => response.json())
+        .then(data => {
+          loadOrang()
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
     function infoOrang(id) {
@@ -275,9 +299,11 @@
         <p>Jenis Kelamin</p>
         <input type="text" class="gender_field" name="jenis_kelamin" placeholder="jenis_kelamin" value="">
       </form>
-      <button class="submit_edit_btn" onclick="submitEdit()">Edit</button>
+      <button class="submit_edit_btn" onclick="submitEdit()">Edit</button> <span><em>*klik pada nama dibawah untuk mengedit</em></span>
     </div>
-    <div id="error_output"></div>
+    <p>message:</p>
+    <div id="error_output" style="margin-top: 20px"></div>
+    <li>Budi</li>
     <ul class="keturunan_dari_id0">
 
     </ul>

@@ -1,5 +1,10 @@
 # TEST PROGRAMMER PYTHON
 
+## how to run server
+1. pastikan sudah terinstall semua package yang ada di requirements.txt. atau buat virtual environment python dan aktifkan. lalu jalankan perintah `pip install -r requirements.txt`
+
+2. pastikan berada pada direktori base (direktori dimana readme.md berada). lalu jalankan perintah `python manage.py runserver`
+
 ## api-endpoint
 - api/
     - anak-budi/ (mendapatkan semua anak budi)
@@ -18,15 +23,17 @@
 - keturunan_dari (int) # id dari orang tua
 
 ## challenge
-1. Buat rancangan 1 table saja untuk menyimpan data di atas
-    dibuat dengan menggunakan database sqlite3
+1. Buat rancangan 1 table saja untuk menyimpan data di atas.
+
+    dibuat dengan menggunakan database sqlite3.
 2. Input data sesuai dengan silsilah di atas
-    sudah
+    
+    sudah.
 3. Buat query untuk mendapatkan semua anak Budi
     hit endpoint : `api/anak-budi`
 4. Buat query untuk mendapatkan cucu dari budi
     hit endpoint : `api/cucu-budi/`
-5. Buat query untuk mendapatkan cucu perempuan dari budi
+5. Buat query untuk mendapatkan cucu perempuan dari budi.
     hit endpoint : `api/cucu-budi/?jenis_kelamin=wanita`
 6. Buat query untuk mendapatkan bibi dari Farah
     hit endpoint : `api/bibi-dari/farah`
@@ -34,8 +41,11 @@
 ani
     hit endpoint : `api/sepupu-dari/hani?jenis_kelamin=pria`
 8. Rancang dan buat API yang bisa dibuat untuk kasus di atas
-    dibuat menggunakan framework django. dan tidak menggunakan model
+
+    dibuat menggunakan framework django. dan tidak menggunakan model.
 9. Buat aplikasi CRUD sederhana untuk silsilah keluarga menggunakan Python
-    pergi ke url : '/' (index)
+
+    pergi ke url : '/' (index).
 10. Buat visualisasi tree untuk data yang diinput di nomer 1
-    lihat file `visual-tree.png`
+    
+    pada halaman '/' (index) sudah tertera visualisasi tree.

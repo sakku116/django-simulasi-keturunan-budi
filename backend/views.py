@@ -165,8 +165,19 @@ def orang(request, nama_or_id=None):
         jenis_kelamin = getBodyRequest('jenis_kelamin')
 
         with connection.cursor() as cursor:
-            cursor.execute(f"UPDATE budi SET nama = {nama},")
+            try:
+                message = 'success'
+                print(id, nama, jenis_kelamin)
+                cursor.execute(f"UPDATE budi SET nama = '{nama}', jenis_kelamin = '{jenis_kelamin}' WHERE id = {id}")
+            except:
+                message = 'failed'
 
+        return JsonResponse(
+            {
+                "message": message
+            }
+        )
+        
     if request.method == "DELETE":
         id = getBodyRequest('id')
 
@@ -176,7 +187,7 @@ def orang(request, nama_or_id=None):
                 cursor.execute(f"SELECT id FROM budi WHERE keturunan_dari_id = {id} ")
                 if cursor.fetchone() != None: 
                     # jika mempunyai anak
-                    message = "failed"
+                    message = "hapus keturunan terlebih dahulu!"
                 else:
                     # jjika tidak mempunyai anak
                     message = "success"
