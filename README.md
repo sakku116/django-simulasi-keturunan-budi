@@ -20,7 +20,7 @@
 - nama (varchar, not null)
 - jenis_kelamin (varchar, not null)
 - keturunan_ke (int)
-- keturunan_dari (int) # id dari orang tua
+- keturunan_dari_id (int) # id dari orang tua
 
 ## challenge
 1. Buat rancangan 1 table saja untuk menyimpan data di atas.
