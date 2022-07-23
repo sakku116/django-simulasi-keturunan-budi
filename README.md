@@ -8,7 +8,7 @@
     - bibi-dari/<nama> (mendapatkan paman dari nama (keturunan dengan nomor diatas nama tersebut dan pria))
     - sepupu-dari/<nama>?jenis_kelamin="pria/wanita" (mendapatkan semua sepupu dari nama (keturunan dengan nomor yang sama))
     - orang/ (mendapatkan informasi data tabel dari semua nama yang ada)
-    - orang/<nama> (mendapatkan informasi data tabel dari nama)
+    - orang/<nama_or_id> (mendapatkan informasi data tabel dari nama)
 
 ## struktur db
 - id (integer, autoincrement)
