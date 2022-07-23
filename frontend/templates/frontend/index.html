@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,8 +7,99 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>keturunan budi</title>
+
+  <style>
+    .content_container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 30px;
+    }
+    </style>
+
+  <script>
+    function buatKeturunan(dari=0, data=None) {
+      // karena butuh neested list jadi tidak usah menggunakan li
+      const parent = document.querySelector(`.keturunan_dari_id${dari}`)
+
+      data.forEach(item => {
+        if (item.keturunan_dari_id == dari) {
+          console.log(item);
+
+          // buat child
+          const child = document.createElement('li');
+          child.setAttribute('class', `keturunan_dari_id${dari}`);
+
+          // buat content untuk child
+          const content_container = document.createElement('div');
+          content_container.setAttribute('class', 'content_container');
+          const text = document.createElement('p');
+          text.innerHTML = item.nama;
+          content_container.append(text);
+          const add_btn = document.createElement('button');
+          add_btn.innerHTML = '+';
+          content_container.append(add_btn);
+
+          // buat container didalam child untuk child selanjutnya
+          const child_container = document.createElement('ul');
+          child_container.setAttribute('class', `keturunan_dari_id${item.id}`);
+          
+          child.append(content_container);
+          child.append(child_container);
+          parent.append(child);
+        }
+      })
+    }
+
+    function getMaxChild(data) {
+      max = 0
+      for (item of data) {
+        if (item.keturunan_dari_id > max) {
+          max += item.keturunan_dari_id
+        }
+      }
+
+      return max
+    }
+
+    function konstruksiKeturunan(data) {
+      const max_child = getMaxChild(data);
+      
+      for (var i=0; i <= max_child;  i++) {
+        buatKeturunan(ke=i, data=data)
+      }
+    }
+
+    function fetchOrang(url="") {
+      fetch(url, {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' }})
+        .then(response => response.json())
+        .then(data => {
+          const result = data.result;
+          konstruksiKeturunan(result)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const main = document.querySelector('main')
+      const error_output = document.querySelector('#error_output')
+
+      // load data
+      fetchOrang('/api/orang/')
+    });
+  </script>
 </head>
 <body>
-  
+  <h1>Keturunan Budi</h1>
+  <main>
+    <ul class="keturunan_dari_id0">
+
+    </ul>
+  </main>
+
 </body>
 </html>
