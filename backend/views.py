@@ -1,16 +1,19 @@
 from django.shortcuts import render
 from django.db import connection
 from django.http import JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt #, csrf_protect, requires_csrf_token
+import json
+from django.http import QueryDict
 
 def formatResult(rows):
     result = []
     for row in rows:
         row = {
             'id': row[0],
-            'name': row[1],
+            'nama': row[1],
             'jenis_kelamin': row[2],
             'keturunan_ke': row[3],
-            'keturunan_dari': row[4],
+            'keturunan_dari_id': row[4],
         }
         result.append(row)
 
@@ -26,7 +29,7 @@ def index(request):
  
     return JsonResponse(
         {
-            'data': result 
+            'result': result 
         }
     )
 
@@ -46,7 +49,7 @@ def cucuBudi(request):
 
         return JsonResponse(
             {
-                'data': result
+                'result': result
             }
         )
 
@@ -61,7 +64,7 @@ def bibiDari(request, nama):
         result = bibi
  
     return JsonResponse(
-        {'data': result}
+        {'result': result}
     )
 
 def pamanDari(request, nama):
@@ -75,7 +78,7 @@ def pamanDari(request, nama):
         result = paman
  
     return JsonResponse(
-        {'data': result}
+        {'result': result}
     )
 
 def sepupuDari(request, nama):
@@ -92,19 +95,41 @@ def sepupuDari(request, nama):
         result = sepupu
  
     return JsonResponse(
-        {'data': result}
+        {'result': result}
     )
 
-def orang(request, nama=None):
-    with connection.cursor() as cursor:
-        if nama:
-            cursor.execute(f"SELECT * FROM budi WHERE nama = '{nama}' COLLATE NOCASE")
-        else:
-            cursor.execute(f"SELECT * FROM budi")
-        orang = cursor.fetchall()
+def orang(request, nama_or_id=None):
+    if request.method == 'GET':
+        with connection.cursor() as cursor:
+            if nama_or_id:
+                if nama_or_id.isdigit():
+                    cursor.execute(f"SELECT * FROM budi WHERE id = '{nama_or_id}' COLLATE NOCASE")
+                else:
+                    cursor.execute(f"SELECT * FROM budi WHERE nama = '{nama_or_id}' COLLATE NOCASE")
+            else:
+                cursor.execute(f"SELECT * FROM budi")
+            orang = cursor.fetchall()
 
-        result = formatResult(orang)
- 
+            result = formatResult(orang)
+            
+            return JsonResponse(
+                {'result': result}
+            )
+    
+    if request.method == "POST":
+        pass
+
+    if request.method == "PUT":
+        pass
+
+    if request.method == "DELETE":
+        pass
+
+@csrf_exempt
+def test(request):
+
     return JsonResponse(
-        {'data': result}
+        {
+            "result": request.method
+        }
     )
