@@ -98,7 +98,16 @@ def sepupuDari(request, nama):
         {'result': result}
     )
 
+@csrf_exempt
 def orang(request, nama_or_id=None):
+    def getBodyRequest(key=None, default=None):
+        # get body request manually
+        body_request = json.loads(request.body.decode('utf-8'))
+        try:
+            return body_request[key]
+        except:
+            return default
+
     if request.method == 'GET':
         with connection.cursor() as cursor:
             if nama_or_id:
@@ -117,14 +126,64 @@ def orang(request, nama_or_id=None):
             )
     
     if request.method == "POST":
-        pass
+        nama = getBodyRequest('nama')
+        jenis_kelamin = getBodyRequest('jenis_kelamin')
+        keturunan_dari_id = getBodyRequest('keturunan_dari_id', 0)
 
+        genders = ['pria', 'wanita']
+        if jenis_kelamin in genders:
+            pass
+        else:
+            jenis_kelamin = 'pria'
+
+        with connection.cursor() as cursor:
+            if nama and jenis_kelamin: # required
+                # dapatkan urutan keturunan
+                cursor.execute(f"SELECT keturunan_ke FROM budi WHERE id = {keturunan_dari_id}")
+                urutan_keturunan_orang_tua = cursor.fetchone()[0]
+                keturunan_ke = urutan_keturunan_orang_tua+1
+
+                message = "success"
+                try:
+                    cursor.execute(f"INSERT INTO budi (nama, jenis_kelamin, keturunan_ke, keturunan_dari_id) VALUES ('{nama}', '{jenis_kelamin}', {keturunan_ke}, {keturunan_dari_id})")
+                except:
+                    message = "failed"
+            else:
+                message = "failed"
+
+            # reset auto increment
+            cursor.execute("UPDATE sqlite_sequence SET seq = 0 WHERE name = 'budi'")
+
+        return JsonResponse(
+            {
+                "message": message
+            }
+        )
     if request.method == "PUT":
         pass
 
     if request.method == "DELETE":
-        pass
+        id = getBodyRequest('id')
 
+        with connection.cursor() as cursor:
+            try:
+                # cek apakah mempunyai anak
+                cursor.execute(f"SELECT id FROM budi WHERE keturunan_dari_id = {id} ")
+                if cursor.fetchone() != None: 
+                    # jika mempunyai anak
+                    message = "failed"
+                else:
+                    # jjika tidak mempunyai anak
+                    message = "success"
+                    cursor.execute(f"DELETE FROM budi WHERE id={id}")
+            except:
+                message = "failed"
+
+        return JsonResponse(
+            {
+                "message": message
+            }, status = 200 if message == 'success' else 400
+        )
 @csrf_exempt
 def test(request):
 

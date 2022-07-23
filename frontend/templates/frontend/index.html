@@ -12,20 +12,39 @@
     .content_container {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 5px;
       height: 30px;
+    }
+    button {
+      font-size: .6rem
+    }
+    input {
+      width: 70px
+    }
+    .add_form {
+      display: none;
+      margin-left: 10px;
+      align-items: center;
+    }
+    .add_form button {
+      height: 20px;
     }
     </style>
 
   <script>
+    let allow_hide_add_form = false;
+    function showAddForm(element) {
+      element.style.display = 'flex'
+    }
+    function hideAddForm(element) {
+      element.style.display = 'none'
+    }
     function buatKeturunan(dari=0, data=None) {
       // karena butuh neested list jadi tidak usah menggunakan li
       const parent = document.querySelector(`.keturunan_dari_id${dari}`)
 
       data.forEach(item => {
         if (item.keturunan_dari_id == dari) {
-          console.log(item);
-
           // buat child
           const child = document.createElement('li');
           child.setAttribute('class', `keturunan_dari_id${dari}`);
@@ -33,12 +52,59 @@
           // buat content untuk child
           const content_container = document.createElement('div');
           content_container.setAttribute('class', 'content_container');
+          
           const text = document.createElement('p');
           text.innerHTML = item.nama;
           content_container.append(text);
+          
+          const add_form = document.createElement('div')
+          add_form.setAttribute('class', 'add_form')
+          
+          const field1 = document.createElement('input');
+          field1.setAttribute('name', 'nama')
+          field1.setAttribute('placeholder', 'nama')
+          field1.setAttribute('class', 'form_element')
+
+          const field2 = document.createElement('input');
+          field2.setAttribute('name', 'jenis_kelamin')
+          field2.setAttribute('placeholder', 'pria/wanita')
+          field2.setAttribute('class', 'form_element')
+          
+          const field3 = document.createElement('input');
+          field3.setAttribute('type', 'hidden')
+          field3.setAttribute('name', 'keturunan_dari_id')
+          field3.setAttribute('value', item.id)
+
+          const submit_btn = document.createElement('button');
+          submit_btn.setAttribute('class', 'form_element')
+          submit_btn.addEventListener('click', () => {
+            tambahOrang(field1.value, field2.value, field3.value);
+          })
+          submit_btn.innerHTML = 'tambah'
+          
           const add_btn = document.createElement('button');
+          add_btn.addEventListener('click', () => {
+            const all_add_form = document.querySelectorAll('.add_form')
+            all_add_form.forEach(item => {hideAddForm(item)})
+            showAddForm(add_form)
+          })
           add_btn.innerHTML = '+';
+          
+          const remove_btn = document.createElement('button');
+          remove_btn.addEventListener('click', () => {
+            const all_add_form = document.querySelectorAll('.add_form')
+            all_add_form.forEach(item => {hideAddForm(item)})
+            hapusOrang(item.id)
+          })
+          remove_btn.innerHTML = '-';
+
+          add_form.append(field1);
+          add_form.append(field2);
+          add_form.append(field3);
+          add_form.append(submit_btn)
           content_container.append(add_btn);
+          content_container.append(remove_btn);
+          content_container.append(add_form);
 
           // buat container didalam child untuk child selanjutnya
           const child_container = document.createElement('ul');
@@ -70,13 +136,52 @@
       }
     }
 
-    function fetchOrang(url="") {
-      fetch(url, {
+    function tambahOrang(nama="", jenis_kelamin="", keturunan_dari_id=0) {
+      data = {
+        "nama": nama,
+        "jenis_kelamin": jenis_kelamin,
+        "keturunan_dari_id": keturunan_dari_id
+      }
+      fetch('api/orang/', {
+        method: 'POST',
+        body: JSON.stringify(data)})
+        .then(response => response.json())
+        .then(data => {
+          loadOrang()
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    function hapusOrang(id=0) {
+      data = {
+        "id": id
+      }
+      fetch('api/orang/', {
+        method: 'DELETE',
+        body: JSON.stringify(data)})
+        .then(response => response.json())
+        .then(data => {
+          loadOrang()
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    function loadOrang() {
+      fetch('/api/orang/', {
       method: 'GET',
       headers: { 'content-type': 'application/json' }})
         .then(response => response.json())
         .then(data => {
           const result = data.result;
+          // refresh before loading
+          const first = document.querySelector('.keturunan_dari_id0')
+          while (first.firstChild) {
+            first.removeChild(first.lastChild);
+          }
           konstruksiKeturunan(result)
         })
         .catch(error => {
@@ -89,7 +194,7 @@
       const error_output = document.querySelector('#error_output')
 
       // load data
-      fetchOrang('/api/orang/')
+      loadOrang()
     });
   </script>
 </head>
@@ -100,6 +205,8 @@
 
     </ul>
   </main>
+
+  <div id="error_output"></div>
 
 </body>
 </html>
