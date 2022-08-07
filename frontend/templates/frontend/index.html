@@ -58,6 +58,9 @@
       font-size: 1rem;
       margin-top: 10px
     }
+    .keturunan_dari_id0 .content_container {
+      font-size: 1.5rem
+    }
     </style>
 
   <script>
@@ -210,9 +213,13 @@
     }
 
     function loadOrang() {
+      const error_output = document.querySelector('#error_output');
+      error_output.innerHTML = "";
+      
       fetch('/api/orang/', {
-      method: 'GET',
-      headers: { 'content-type': 'application/json' }})
+          method: 'GET',
+          headers: { 'content-type': 'application/json' }
+        })
         .then(response => response.json())
         .then(data => {
           const result = data.result;
@@ -299,11 +306,10 @@
         <p>Jenis Kelamin</p>
         <input type="text" class="gender_field" name="jenis_kelamin" placeholder="jenis_kelamin" value="">
       </form>
-      <button class="submit_edit_btn" onclick="submitEdit()">Edit</button> <span><em>*klik pada nama dibawah untuk mengedit</em></span>
+      <button class="submit_edit_btn" onclick="submitEdit()">Edit</button> <span><em>*pilih nama dibawah untuk mengedit</em></span>
+      <p style="margin-top: 20px">message:</ps>
+      <div id="error_output" style="margin-top: 20px; opacity:.5"></div>
     </div>
-    <p>message:</p>
-    <div id="error_output" style="margin-top: 20px"></div>
-    <li>Budi</li>
     <ul class="keturunan_dari_id0">
 
     </ul>
